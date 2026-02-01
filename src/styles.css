@@ -134,3 +134,9 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .column-resizer {
+    @apply absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none hover:bg-indigo-100 active:bg-indigo-500 dark:hover:bg-indigo-800 dark:active:bg-indigo-600/80;
+  }
+}

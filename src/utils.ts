@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
+import { z } from "zod";
 
-export type Person = {
+export type Data = {
   id: string;
   translated_text: string;
   translated_chunks: string;
@@ -17,7 +18,7 @@ const range = (len: number) => {
   return arr;
 };
 
-const newPerson = (index: number): Person => {
+const newData = (index: number): Data => {
   return {
     id: `<urn:uuid:${faker.string.uuid()}>`,
     translated_text: faker.lorem.sentences({ min: 3, max: 6 }),
@@ -29,14 +30,38 @@ const newPerson = (index: number): Person => {
 };
 
 export function makeData(...lens: number[]) {
-  const makeDataLevel = (depth = 0): Person[] => {
+  const makeDataLevel = (depth = 0): Data[] => {
     const len = lens[depth]!;
-    return range(len).map((_, index): Person => {
+    return range(len).map((_, index): Data => {
       return {
-        ...newPerson(index),
+        ...newData(index),
       };
     });
   };
 
   return makeDataLevel();
+}
+
+export function inferZodSchema(sample: Record<string, unknown>): z.ZodObject<any> {
+  const shape: Record<string, z.ZodTypeAny> = {};
+
+  for (const [key, value] of Object.entries(sample)) {
+    if (value === null) {
+      shape[key] = z.null();
+    } else if (typeof value === "string") {
+      shape[key] = z.string();
+    } else if (typeof value === "number") {
+      shape[key] = z.number();
+    } else if (typeof value === "boolean") {
+      shape[key] = z.boolean();
+    } else if (Array.isArray(value)) {
+      shape[key] = z.array(z.unknown());
+    } else if (typeof value === "object") {
+      shape[key] = inferZodSchema(value as Record<string, unknown>);
+    } else {
+      shape[key] = z.unknown();
+    }
+  }
+
+  return z.object(shape);
 }
