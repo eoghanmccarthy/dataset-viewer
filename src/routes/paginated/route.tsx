@@ -17,7 +17,7 @@ import { z } from "zod";
 import { ColumnHeader } from "@/components/column-header.tsx";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { makeData, type Data, inferZodSchema } from "@/utils.ts";
+import { makeData, inferZodSchema } from "@/utils.ts";
 
 import { Cell, JSONCell } from "../../components/cells.tsx";
 import { JSONViewerOverlay } from "../../components/json-viewer-overlay.tsx";
@@ -49,7 +49,7 @@ export function RouteComponent() {
   const [columnResizeMode] = React.useState<ColumnResizeMode>("onChange");
   const [columnResizeDirection] = React.useState<ColumnResizeDirection>("ltr");
 
-  const dynamicColumns = React.useMemo<ColumnDef<Data>[]>(() => {
+  const dynamicColumns = React.useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
     // Logic to generate dynamic columns based on state
     if (data.length === 0) return [];
 

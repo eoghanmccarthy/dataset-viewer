@@ -18,7 +18,7 @@ const range = (len: number) => {
   return arr;
 };
 
-const newData = (index: number): Data => {
+const newData = (): Data => {
   return {
     id: `<urn:uuid:${faker.string.uuid()}>`,
     translated_text: faker.lorem.sentences({ min: 3, max: 6 }),
@@ -32,9 +32,9 @@ const newData = (index: number): Data => {
 export function makeData(...lens: number[]) {
   const makeDataLevel = (depth = 0): Data[] => {
     const len = lens[depth]!;
-    return range(len).map((_, index): Data => {
+    return range(len).map((_): Data => {
       return {
-        ...newData(index),
+        ...newData(),
       };
     });
   };
